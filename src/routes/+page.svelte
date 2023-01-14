@@ -5,14 +5,12 @@
   const newTodo = writable('');
 
   const mousePosition = writable({x: 0, y: 0});
-  const draggingElement = writable();
   const movingTodo = writable();
-  const dragStartPosition = writable({x: 0, y: 0});
-  // save initial drag position and calculate difference to current mouseposition
-  // on mouse enter if html element, reorder list
-  $: if ($draggingElement) $draggingElement.style.translate = `${$mousePosition.x - $dragStartPosition.x}px ${$mousePosition.y - $dragStartPosition.y}px`;
+  let draggingElement;
+  $: if (draggingElement) {
+    draggingElement.style.translate = `${$mousePosition.x}px ${$mousePosition.y}px`;
+  }
 
-  $: console.log('drag start at', $dragStartPosition);
   $: console.log('todo list', [...$todoList]);
 </script>
 
@@ -21,8 +19,14 @@
     <meta name="description" content="Svelte demo app"/>
 </svelte:head>
 
+{#if $movingTodo}
+    <div class="moving-todo" bind:this={draggingElement}>
+        <span class:checked={$movingTodo.done}>{$movingTodo.text}</span>
+    </div>
+{/if}
+
 <section on:mousemove={event => $mousePosition = {x: event.clientX, y: event.clientY}}
-         on:mouseup={() => $draggingElement = undefined}>
+         on:mouseup={() => $movingTodo = undefined}>
     <h1>Todo-list</h1>
     <div class="new-todo">
         <input type="text" bind:value={$newTodo}>
@@ -31,63 +35,82 @@
 
     {#each $todoList as todo, index}
         <div class="todo-container" on:mouseenter={() => $movingTodo ? todoList.moveTodo($movingTodo, index): null}>
-            <div class="todo"
-                 on:mousedown={e => {$movingTodo = {...todo}; $draggingElement = e.currentTarget; $dragStartPosition = {x: e.x, y: e.y}}}>
-			<span class="checkbox" class:done={todo.done}
-                  on:click={e => todoList.updateTodoStatus({...todo, done: !todo.done})}>
-			</span>
-                <span class:checked={todo.done}>{todo.text}</span>
-                <span class="remove-button" on:click={() => todoList.removeTodo(todo)}>❌</span>
-            </div>
+            {#if !$movingTodo || todo.text !== $movingTodo.text}
+                <div class="todo">
+			        <span class="checkbox" class:done={todo.done}
+                          on:click={e => todoList.updateTodoStatus({...todo, done: !todo.done})}>
+                    </span>
+                    <span class="todo-text" class:checked={todo.done} on:mousedown={() => $movingTodo = {...todo}}>
+                        {todo.text}
+                    </span>
+                    <span class="remove-button" on:click={() => todoList.removeTodo(todo)}>❌</span>
+                </div>
+            {/if}
         </div>
     {/each}
 </section>
 
-<style>
+<style lang="scss">
+    .moving-todo {
+        width: clamp(500px, 50%, 800px);
+        height: 50px;
+        position: absolute;
+        pointer-events: none;
+    }
+
     section {
+        height: 100%;
         display: flex;
         flex-direction: column;
         align-items: center;
         gap: 20px;
         flex: 0.6;
-    }
 
-    .new-todo, .new-todo * {
-        height: 30px;
-    }
-
-    .todo-container {
+      .todo-container {
         border: 1px solid slategrey;
         border-radius: 4px;
-    }
+        width: clamp(500px, 50%, 800px);
+        height: 50px;
 
-    .todo {
-        border: 1px solid slategrey;
-        border-radius: 4px;
-        padding: 8px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        user-select: none;
-    }
+        .todo {
+          width: 100%;
+          height: 100%;
+          box-sizing: border-box;
+          border: 1px solid slategrey;
+          border-radius: 4px;
+          padding: 8px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 8px;
+          user-select: none;
 
-    .checkbox {
-        width: 20px;
-        height: 20px;
-        border: 1px solid slategrey;
-        border-radius: 4px;
-        cursor: pointer;
-    }
+          .checkbox {
+            width: 20px;
+            height: 20px;
+            border: 1px solid slategrey;
+            border-radius: 4px;
+            cursor: pointer;
 
-    .done {
-        background-color: #4075a6;
-    }
+            &.done {
+              background-color: #4075a6;
+            }
+          }
 
-    .checked {
-        text-decoration: line-through;
-    }
+          .todo-text {
+            width: 100%;
+            text-align: center;
+            cursor: grab;
 
-    .remove-button {
-        cursor: pointer;
+            &.checked {
+              text-decoration: line-through;
+            }
+          }
+
+          .remove-button {
+            cursor: pointer;
+          }
+        }
+      }
     }
 </style>
