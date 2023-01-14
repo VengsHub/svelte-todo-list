@@ -1,12 +1,13 @@
-<script>
-  import {todoList} from "../lib/todo-list.ts";
+<script lang="ts">
+  import { todoList } from '../lib/todo-list.ts';
+  import type { Todo } from '../lib/todo-list.ts';
   import {writable} from "svelte/store";
 
   const newTodo = writable('');
 
   const mousePosition = writable({x: 0, y: 0});
-  const movingTodo = writable();
-  let draggingElement;
+  const movingTodo = writable<Todo>();
+  let draggingElement: HTMLElement;
   $: if (draggingElement) {
     draggingElement.style.translate = `${$mousePosition.x}px ${$mousePosition.y}px`;
   }
