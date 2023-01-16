@@ -41,8 +41,8 @@
 			        <span class="checkbox" class:done={todo.done}
                           on:click={e => todoList.updateTodoStatus({...todo, done: !todo.done})}>
                     </span>
-                    <span class="todo-text" class:checked={todo.done} on:mousedown={() => $movingTodo = {...todo}}>
-                        <p>{todo.text}</p>
+                    <span class="todo-text" on:mousedown={() => $movingTodo = {...todo}}>
+                        <p class:checked={todo.done}>{todo.text}</p>
                     </span>
                     <span class="remove-button" on:click={() => todoList.removeTodo(todo)}>❌</span>
                 </div>
