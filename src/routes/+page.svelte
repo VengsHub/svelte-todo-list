@@ -1,7 +1,7 @@
 <script lang="ts">
   import { todoList } from '../lib/todo-list.ts';
   import type { Todo } from '../lib/todo-list.ts';
-  import {writable} from "svelte/store";
+  import { writable } from 'svelte/store';
 
   const newTodo = writable('');
 
@@ -52,73 +52,77 @@
 </section>
 
 <style lang="scss">
-    .moving-todo {
-        width: clamp(500px, 50%, 800px);
-        height: 50px;
-        position: absolute;
-        pointer-events: none;
+  .moving-todo {
+    width: clamp(500px, 50%, 800px);
+    height: 50px;
+    position: absolute;
+    pointer-events: none;
+
+    .checked {
+      text-decoration: line-through;
     }
+  }
 
-    section {
+  section {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    flex: 0.6;
+
+    .todo-container {
+      border: 1px solid slategrey;
+      border-radius: 4px;
+      width: clamp(500px, 50%, 800px);
+      height: 50px;
+
+      .todo {
+        width: 100%;
         height: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 20px;
-        flex: 0.6;
-
-      .todo-container {
+        box-sizing: border-box;
         border: 1px solid slategrey;
         border-radius: 4px;
-        width: clamp(500px, 50%, 800px);
-        height: 50px;
+        padding: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        user-select: none;
 
-        .todo {
-          width: 100%;
-          height: 100%;
-          box-sizing: border-box;
+        .checkbox {
+          width: 20px;
+          height: 20px;
           border: 1px solid slategrey;
           border-radius: 4px;
-          padding: 8px;
+          cursor: pointer;
+
+          &.done {
+            background-color: #4075a6;
+          }
+        }
+
+        .todo-text {
+          height: 100%;
+          width: 100%;
+          cursor: grab;
           display: flex;
+          justify-content: center;
           align-items: center;
-          justify-content: space-between;
-          gap: 8px;
-          user-select: none;
 
-          .checkbox {
-            width: 20px;
-            height: 20px;
-            border: 1px solid slategrey;
-            border-radius: 4px;
-            cursor: pointer;
+          p {
+            text-align: center;
 
-            &.done {
-              background-color: #4075a6;
+            &.checked {
+              text-decoration: line-through;
             }
           }
+        }
 
-          .todo-text {
-            height: 100%;
-            width: 100%;
-            cursor: grab;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-
-            p {
-              text-align: center;
-
-              &.checked {
-                text-decoration: line-through;
-              }
-            }
-          }
-
-          .remove-button {
-            cursor: pointer;
-          }
+        .remove-button {
+          cursor: pointer;
         }
       }
     }
+  }
 </style>
