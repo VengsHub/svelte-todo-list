@@ -42,7 +42,7 @@
                           on:click={e => todoList.updateTodoStatus({...todo, done: !todo.done})}>
                     </span>
                     <span class="todo-text" class:checked={todo.done} on:mousedown={() => $movingTodo = {...todo}}>
-                        {todo.text}
+                        <p>{todo.text}</p>
                     </span>
                     <span class="remove-button" on:click={() => todoList.removeTodo(todo)}>❌</span>
                 </div>
@@ -99,12 +99,19 @@
           }
 
           .todo-text {
+            height: 100%;
             width: 100%;
-            text-align: center;
             cursor: grab;
+            display: flex;
+            justify-content: center;
+            align-items: center;
 
-            &.checked {
-              text-decoration: line-through;
+            p {
+              text-align: center;
+
+              &.checked {
+                text-decoration: line-through;
+              }
             }
           }
 
