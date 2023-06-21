@@ -7,12 +7,19 @@
 
   const mousePosition = writable({x: 0, y: 0});
   const movingTodo = writable<Todo>();
+
   let draggingElement: HTMLElement;
   $: if (draggingElement) {
     draggingElement.style.translate = `${$mousePosition.x}px ${$mousePosition.y}px`;
   }
 
   $: console.log('todo list', [...$todoList]);
+
+  // reminder: todoList is a custom store
+  const array = writable([]);
+  const totalTodos = writable(0);
+  $: $totalTodos = $array.length;
+  $: $totalTodos = $todoList.length;
 </script>
 
 <svelte:head>
@@ -21,7 +28,7 @@
 </svelte:head>
 
 {#if $movingTodo}
-    <div class="moving-todo" bind:this={draggingElement}>
+    <div class="moving-todo" bind:this={draggingElement} style="translate: {$mousePosition.x}px {$mousePosition.y}px">
         <span class:checked={$movingTodo.done}>{$movingTodo.text}</span>
     </div>
 {/if}
@@ -35,7 +42,8 @@
     </div>
 
     {#each $todoList as todo, index}
-        <div class="todo-container" on:mouseenter={() => $movingTodo ? todoList.moveTodo($movingTodo, index): null}>
+        <div class="todo-container"
+             on:mouseenter={() => $movingTodo ? todoList.moveTodo($movingTodo, index): null}>
             {#if !$movingTodo || todo.text !== $movingTodo.text}
                 <div class="todo">
 			        <span class="checkbox" class:done={todo.done}
@@ -57,6 +65,8 @@
     height: 50px;
     position: absolute;
     pointer-events: none;
+    left: 0;
+    top: 0;
 
     .checked {
       text-decoration: line-through;

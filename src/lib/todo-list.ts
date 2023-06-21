@@ -5,7 +5,6 @@ export interface Todo {
   done: boolean;
 }
 
-// only for stores with non-primitive values and setters or getters
 function createTodoList(initial: Todo[] = []) {
   const { subscribe, set, update } = writable<Todo[]>(initial);
 
@@ -15,9 +14,10 @@ function createTodoList(initial: Todo[] = []) {
     updateTodoStatus: (todoWithNewStatus: Todo) => update(todos =>
         todos.map(todo => todo.text === todoWithNewStatus.text ? todoWithNewStatus : todo)
     ),
-    removeTodo: (todoToRemove: Todo) => update(todos => todos.filter(todo => todo.text !== todoToRemove.text)),
+    removeTodo: (todoToRemove: Todo) => update(todos =>
+        todos.filter(todo => todo.text !== todoToRemove.text)
+    ),
     moveTodo: (todoToMove: Todo, position: number) => update(todos => {
-      console.log('moving to', position);
       const movedTodoIndex = todos.findIndex(todo => todo.text === todoToMove.text);
       todos.splice(movedTodoIndex, 1);
       todos.splice(position, 0, todoToMove);
