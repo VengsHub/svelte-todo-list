@@ -1,11 +1,12 @@
 <script lang="ts">
   import { writable } from 'svelte/store';
-  import { Todo, todoList } from '$lib/todo-list';
+  import type { Todo } from '$lib/todo-list';
+  import { todoList } from '$lib/todo-list';
 
   const newTodo = writable('');
 
   const mousePosition = writable({x: 0, y: 0});
-  const movingTodo = writable<Todo>();
+  const movingTodo = writable<Todo | undefined>();
 
   let draggingElement: HTMLElement;
   $: if (draggingElement) {
