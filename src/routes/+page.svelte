@@ -1,7 +1,6 @@
 <script lang="ts">
-  import { todoList } from '../lib/todo-list.ts';
-  import type { Todo } from '../lib/todo-list.ts';
   import { writable } from 'svelte/store';
+  import { Todo, todoList } from '$lib/todo-list';
 
   const newTodo = writable('');
 
